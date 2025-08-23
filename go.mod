@@ -1,3 +1,3 @@
-module github.com/mrbocch/brainfck
+module brainfck
 
 go 1.24.4

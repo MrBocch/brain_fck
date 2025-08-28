@@ -1,5 +1,5 @@
 # simple program that generates strings in bf
-# only ascii letters
+# only ascii letters, cant do escape chars?
 
 def s_to_uint8(s)
     return s.split("").map{|c| c.ord }

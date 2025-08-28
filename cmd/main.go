@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-const size  = 30_000
-var tape [size] uint8
+const SIZE = 30_000
+var tape [SIZE] uint8
 
 func main(){
 	if len(os.Args) == 1 {
@@ -51,6 +51,25 @@ func Run(filePath string) {
 		case '#':
 			ptape(tape, dp)
 			ip += 1
+
+		case '[':
+			if tape[dp] == 0 {
+				ip = skips(code, ip)
+				continue
+			} else {
+				ip += 1
+			}
+		case ']': {
+			if tape[dp] != 0 {
+				ip = skips_back(code, ip)
+				continue
+			} else {
+				ip += 1
+			}
+
+		}
+
+
 		default:
 			ip += 1
 			continue
@@ -58,8 +77,8 @@ func Run(filePath string) {
 	}
 }
 
-func ptape(t [size]uint8, p int32) {
-	fmt.Printf("\n==DEBUG==\nPointer Addrres: 0x%04X\n", p)
+func ptape(t [SIZE]uint8, dp int32) {
+	fmt.Printf("\n==DEBUG==\nPointer Addrres: 0x%04X\n", dp)
 	for i, v := range t {
 		if i % 8 == 0 {
 			fmt.Println()
@@ -68,4 +87,56 @@ func ptape(t [size]uint8, p int32) {
 		fmt.Printf("[%03v]", v)
 	}
 	fmt.Println("\n==DEBUG==")
+}
+
+func skips(code string, ip int) int {
+	ip += 1
+	lvl := 0
+	for ;; {
+		c := code[ip]
+		if c == '[' {
+			lvl += 1
+			ip += 1
+			continue
+		}
+
+		if c != ']' {
+			ip += 1
+		}
+		if c == ']' {
+			if lvl != 0 {
+				lvl -= 1
+				ip += 1
+			} else {
+				ip += 1
+				return ip
+			}
+		}
+	}
+}
+
+func skips_back(code string, ip int) int {
+	ip -= 1
+	lvl := 0
+	for ;; {
+		c := code[ip]
+		if c == ']' {
+			lvl += 1
+			ip -= 1
+			continue
+		}
+
+		if c != '[' {
+			ip -= 1
+		}
+		if c == '[' {
+			if lvl != 0 {
+				lvl -= 1
+				ip -= 1
+			} else {
+				// cant just copy and paste
+				return ip
+			}
+		}
+	}
 }

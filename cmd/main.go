@@ -7,7 +7,6 @@ import (
 
 const size  = 30_000
 var tape [size] uint8
-var p int32 = 0
 
 func main(){
 	if len(os.Args) == 1 {
@@ -23,42 +22,50 @@ func Run(filePath string) {
 		fmt.Printf("Error opening %v\n", filePath)
 		os.Exit(1)
 	}
-	var p int32 = 0
+
+	var dp int32 = 0
+	var ip int = 0
 	var code = string(data)
 
-	for _, char := range(code){
+	for ;; {
+		if ip == len(code) { break }
+		char := code[ip]
 		switch char {
-			case '+':
-				tape[p] += 1
-			case '-':
-				tape[p] -= 1
-			case '>':
-				p += 1
-			case '<':
-				p -= 1
-			case '.':
-				fmt.Printf("%c", tape[p])
-			case ',':
-				continue
-			case '#':
-				// printing entire tape
-				ptape(tape, p)
-
-
-			default:
-				continue
+		case '+':
+			tape[dp] += 1
+			ip += 1
+		case '-':
+			tape[dp] -= 1
+			ip += 1
+		case '>':
+			dp += 1
+			ip += 1
+		case '<':
+			dp -= 1
+			ip += 1
+		case '.':
+			fmt.Printf("%c", tape[dp])
+			ip += 1
+		case ',':
+			continue
+		case '#':
+			ptape(tape, dp)
+			ip += 1
+		default:
+			ip += 1
+			continue
 		}
 	}
 }
 
 func ptape(t [size]uint8, p int32) {
-	fmt.Printf("\n==DEBUG==\nPointer Addrres: %5X\n", p)
+	fmt.Printf("\n==DEBUG==\nPointer Addrres: 0x%04X\n", p)
 	for i, v := range t {
 		if i % 8 == 0 {
 			fmt.Println()
-			fmt.Printf("%5X: ", i)
+			fmt.Printf("0x%04X: ", i)
 		}
-		fmt.Printf("[%3v]", v)
+		fmt.Printf("[%03v]", v)
 	}
 	fmt.Println("\n==DEBUG==")
 }

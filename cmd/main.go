@@ -38,9 +38,11 @@ func Run(filePath string) {
 				p -= 1
 			case '.':
 				fmt.Printf("%c", tape[p])
-			// printing entire tape
+			case ',':
+				continue
 			case '#':
-				ptape(tape)
+				// printing entire tape
+				ptape(tape, p)
 
 
 			default:
@@ -49,12 +51,14 @@ func Run(filePath string) {
 	}
 }
 
-func ptape(t [size]uint8) {
-	fmt.Printf("\n\nPointer: %v\n", p)
+func ptape(t [size]uint8, p int32) {
+	fmt.Printf("\n==DEBUG==\nPointer Addrres: %5X\n", p)
 	for i, v := range t {
-		fmt.Printf("[%3v]", v)
 		if i % 8 == 0 {
 			fmt.Println()
+			fmt.Printf("%5X: ", i)
 		}
+		fmt.Printf("[%3v]", v)
 	}
+	fmt.Println("\n==DEBUG==")
 }

@@ -60,11 +60,12 @@ func Run(filePath string) {
 			var input string
 			fmt.Scan(&input)
 		    num, err := strconv.Atoi(input)
-			if err != nil {
-				fmt.Println("invalid")
-				os.Exit(1)
+			if err == nil {
+				tape[dp] = uint8(num)
+			} else {
+				tape[dp] = uint8(input[0])
 			}
-			tape[dp] = uint8(num)
+
 			ip += 1
 		case '#':
 			ptape(tape, dp)

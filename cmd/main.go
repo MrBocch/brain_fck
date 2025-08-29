@@ -41,14 +41,17 @@ func Run(filePath string) {
 			tape[dp] -= 1
 			ip += 1
 		case '>':
-			if dp == SIZE {
+			if dp+1 == SIZE {
 				fmt.Println("[ERROR]: Trying to go out of bounds")
+				ptape(tape, dp)
+				os.Exit(1)
 			}
 			dp += 1
 			ip += 1
 		case '<':
 			if dp == 0 {
 				fmt.Println("[ERROR]: Trying to go out of bounds")
+				ptape(tape, dp)
 				os.Exit(1)
 			}
 			dp -= 1

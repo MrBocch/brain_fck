@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"unicode"
+	"errors"
 )
 
 const SIZE = 30_000
@@ -38,18 +41,40 @@ func Run(filePath string) {
 			tape[dp] -= 1
 			ip += 1
 		case '>':
+			if dp == SIZE {
+				fmt.Println("[ERROR]: Trying to go out of bounds")
+			}
 			dp += 1
 			ip += 1
 		case '<':
+			if dp == 0 {
+				fmt.Println("[ERROR]: Trying to go out of bounds")
+				os.Exit(1)
+			}
 			dp -= 1
 			ip += 1
 		case '.':
 			fmt.Printf("%c", tape[dp])
 			ip += 1
 		case ',':
-			continue
+			var input string
+			fmt.Scan(&input)
+		    num, err := strconv.Atoi(input)
+			if err != nil {
+				fmt.Println("invalid")
+				os.Exit(1)
+			}
+			tape[dp] = uint8(num)
+			ip += 1
 		case '#':
 			ptape(tape, dp)
+			ip += 1
+		case '_':
+			addr, err := extractAddress(code, ip)
+			if err != nil {
+				fmt.Println("[ERROR]: Could not parse address")
+			}
+			fmt.Println(tape[addr])
 			ip += 1
 
 		case '[':
@@ -134,9 +159,21 @@ func skips_back(code string, ip int) int {
 				lvl -= 1
 				ip -= 1
 			} else {
-				// cant just copy and paste
+				// cant just copy and paste code and expect it to work
 				return ip
 			}
 		}
 	}
+}
+
+func extractAddress(s string, i int) (int, error) {
+	j := i + 1
+	for j < len(s) && unicode.IsDigit(rune(s[j])) {
+		j++
+	}
+	if j > i+1 {
+		num, _ := strconv.Atoi(s[i+1 : j])
+		return num, nil
+	}
+	return 0, errors.New("Could not parse address")
 }

@@ -1,2 +1,6 @@
-++[-] #
-A program that does nothing
+Input one number
+, >
+Input next number
+,
+
+< [ - > + < ] #
